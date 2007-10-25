@@ -1,0 +1,75 @@
+=LazyDeveloper
+
+
+Developers are lazy. I know I am. If I have to do things over and over, I want
+them to be automated. Maybe that's efficent and not lazy. However, lazy is a 
+shorter word and it's funnier to call this plugin LazyDeveloper.
+
+This plugin provides some useful Rake tasks that will make your life a little
+eaiser. I use them, and so should you.
+
+
+=Usage
+==Databases
+
+===rake db:migrate
+
+The db:migrate task has been modified slightly. Running this task now clones your
+test database, which is really useful if you run tests individually via TextMate
+or through the commandline.
+
+===rake db:remigrate
+
+Sometimes you just need to wipe out your database tables and start over. This
+task drops your tables and starts over.
+
+==Tests
+Based on an idea from Geoffrey Grosenbach, you can run all tests in units\user_test.rb by doing
+
+  rake test:units:user:all
+
+Or run a specific test by speficying all or part of a name. For example, if I 
+wanted to run the "test_create"  test case, I would use
+
+  rake test:units:user:create
+
+The same rules apply to functional tests
+
+  rake test:functionals:users:list
+
+==Gems
+
+Place a file called .gems in the root of your Rails project. The file should
+contain all of the gems you want to install.
+
+    tz_info
+    rcov
+    fastercsv
+    redcloth
+
+You can install all of these gems easily with
+
+  rake rails:install:gems
+
+==Plugins
+
+Create a file in your Home folder called .plugins and you can have all of your
+favorite plugins easily installed by doing
+
+   rake rails:install:plugins
+
+Just put each plugin name or repository on its own line.
+
+Windows users need to set the HOME environment variable.
+
+==Cleaning Up
+
+Run
+
+  rake rails:clear
+
+to clean up tmp, logs, and docs in one easy command.
+
+
+
+Copyright (c) 2007 Brian Hogan, released under the MIT license
