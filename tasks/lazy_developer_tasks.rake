@@ -52,9 +52,9 @@ namespace :db do
     desc "Drops and re-migrates tables"
     task :remigrate => :environment do 
         # don't run in production mode
-        return unless %w[development test).include? RAILS_ENV
+        return unless %w(development test).include? RAILS_ENV
         ActiveRecord::Base.connection.tables.each { |t| ActiveRecord::Base.connection.drop_table t }
-        Rake::Task[:migrate].invoke]
+        Rake::Task['db:migrate'].invoke
 
     end
   
