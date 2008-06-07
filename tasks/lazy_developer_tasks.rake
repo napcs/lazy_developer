@@ -90,7 +90,7 @@ namespace :rails do
      File.open("./.gems", "r") do |f|
        while (line = f.gets)
          begin
-         sh "#{sudo} gem install #{line} --include-dependencies"
+         sh "#{sudo} gem install #{line}"
          rescue
            puts "Couldn't install #{line}"
          end
