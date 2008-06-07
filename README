@@ -6,7 +6,7 @@ them to be automated. Maybe that's efficent and not lazy. However, lazy is a
 shorter word and it's funnier to call this plugin LazyDeveloper.
 
 This plugin provides some useful Rake tasks that will make your life a little
-eaiser. I use them, and so should you.
+eaiser. I use them in many of my projects and I invite you to do the same.
 
 
 =Usage
@@ -22,6 +22,25 @@ or through the commandline.
 
 Sometimes you just need to wipe out your database tables and start over. This
 task drops your tables and starts over.
+===rake db:export
+
+Dump your database to fixtures. Stores them in /test/fixtures/live. You can then use this to load the data 
+back into another database, even one of a different type
+
+===rake db:import
+Load fixtures from test/fixures/live into your database. Loads fixtures dumped by using rake db:export
+
+== Subversion
+===rake svn:root
+Displays the root of your repository
+
+===rake svn:tags
+Displays all the tags. Assumes you use a tags/ folder and a /trunk folder
+
+===rake svn:tag TAG=rel_1-0-0
+Creates a new tag from the trunk.
+
+
 
 ==Tests
 Based on an idea from Geoffrey Grosenbach, you can run all tests in units\user_test.rb by doing
