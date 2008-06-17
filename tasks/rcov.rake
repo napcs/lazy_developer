@@ -36,7 +36,20 @@ namespace :rcov do
     begin
       Rake::Task['rcov:models'].invoke
     ensure
-      Rake::Task['rcov:controllers'].invoke
+      begin
+        Rake::Task['rcov:controllers'].invoke
+      ensure
+        units = File.open("#{Dir.pwd}/coverage/units/index.html","r").read
+        units = units[units.index("coverage_code")+15,10]
+        units = units[0,units.index("<")]
+        functionals = File.open("#{Dir.pwd}/coverage/functionals/index.html","r").read
+        functionals = functionals[functionals.index("coverage_code")+15,10]
+        functionals = functionals[0,functionals.index("<")]
+        puts "+-----------------------------+"
+        puts "| UNIT COVERAGE:       #{units.ljust(6)} |"
+        puts "| FUNCTIONAL COVERAGE: #{functionals.ljust(6)} |"
+        puts "+-----------------------------+"
+      end
     end
   end
   
