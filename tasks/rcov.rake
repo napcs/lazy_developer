@@ -25,8 +25,8 @@ namespace :rcov do
   # coverage on models and controllers respectively.
   desc "Run functional and unit tests, and get coverage for both."
   task :full do
-    Rake::Task['test:rcov:units'].invoke
-    Rake::Task['test:rcov:functionals'].invoke
+    Rake::Task['rcov:models'].invoke
+    Rake::Task['rcov:controllers'].invoke
   end
 end
       
