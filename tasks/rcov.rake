@@ -49,6 +49,17 @@ namespace :rcov do
         puts "| UNIT COVERAGE:       #{units.ljust(6)} |"
         puts "| FUNCTIONAL COVERAGE: #{functionals.ljust(6)} |"
         puts "+-----------------------------+"
+        to_write = "<html><body><h1>Rcov Report</h1>
+        <div style=\"width:100%; height:50px; border: 1px solid black\"><div style=\"height: 50px; width: #{units}%; background-color: #33FF00; font-size: 18pt; font-style: bold\"><a href=\"units/index.html\">Unit: #{units}</a></div></div><br />
+        <div style=\"width:100%; height:50px; border: 1px solid black\"><div style=\"height: 50px; width: #{functionals}%; background-color: #33FF00; font-size: 18pt; font-style: bold\"><a href=\"functionals/index.html\">Functional: #{functionals}</a></div></div>
+        </body></html>"
+        File.open("coverage/report.html", "w") do |f|
+      		f.puts to_write
+      	end
+      	
+      	if PLATFORM['darwin']
+          system("open #{pwd}/coverage/report.html")
+        end
       end
     end
   end
