@@ -17,7 +17,7 @@ namespace :svn do
     puts get_svn_root
   end
   
-  desc "create tag"
+  desc "create tag  - expects TAG='tag_name"
   task :tag do
     raise "You have to pass a tag name -  rake svn:tag TAG=rel_1-0-0" if ENV["TAG"].nil?
     tagname = ENV["TAG"]
@@ -27,7 +27,7 @@ namespace :svn do
   
   
   namespace :tags do 
-      desc "show the last tag"
+      desc "show the last tag, assuming you've used some sort of naming scheme that uses ascending order"
       task :last do
         
         puts get_svn_tags.split("\n").last

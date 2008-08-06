@@ -43,8 +43,10 @@ namespace :db do
   
     # Override the original Rake task to clone the test database too
     task :migrate do
-      puts "Preparing Test database"
-      Rake::Task['db:test:clone'].invoke
+       unless RAILS_ENV == "production"
+        puts "Preparing Test database"
+        Rake::Task['db:test:clone'].invoke
+      end
     end
 
     # Drops and remigrates tables in case you hurt your database somehow
