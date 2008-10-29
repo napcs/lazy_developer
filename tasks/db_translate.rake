@@ -54,11 +54,7 @@ end
 
 
 namespace :db do
- 
- 
- 
- 
- 
+
   desc "Load fixtures into the current environment's database.  Load specific fixtures using FIXTURES=x,y"
   task :import => :environment do
     require 'active_record/fixtures'
@@ -67,7 +63,6 @@ namespace :db do
       Fixtures.create_fixtures('test/fixtures/live', File.basename(fixture_file, '.*'))
     end
   end
- 
  
   desc "Dump all data to fixtures/live folder"
   task :export => :environment do
@@ -92,6 +87,3 @@ namespace :db do
   end
   
 end
-
-
-

@@ -1,9 +1,65 @@
-# Lazy Specs
-# Kevin Gisi
-# 06/24/08
-# Copyright(c) 2008, released under MIT License
+# Remove the tasks we're going to replace
+# Be very careful with this section and please
+# don't use this if you don't know what it
+# actually does!
+Rake::TaskManager.class_eval do
+  def delete_task(name)
+    @tasks.delete(name)
+  end
+  Rake.application.delete_task("spec:models")
+  Rake.application.delete_task("spec:controllers")
+end
 
 namespace :spec do
+  
+  desc "Run specs for models and show nice display"
+  task :models do
+    puts `ruby script/spec --format s -c spec/models/*_spec.rb`
+  end
+  
+  desc "Run specs for controllers and show nice display"
+  task :controllers do
+    puts `ruby script/spec --format s -c spec/controllers/*_spec.rb`
+  end
+
+    # Provides a mechanism to run specs for the given model
+    # or controller.
+    #
+    # Example:
+    #   rake spec:models:user
+    #   rake spec:controllers:sessions
+    rule /^spec/ do |t|
+      root = t.name.gsub("spec:","").split(/:/)
+      if root.length >= 2
+      flag = root[0]
+      file_name = root[1]
+      #test_name = root[2]
+      test_name = "*" if test_name == "all"
+
+
+        model = (flag == "model" || flag == "m")
+        controller = (flag == "controllers" || flag == "c")
+
+
+        if (model)
+          file_path = "models/#{file_name}_spec.rb" 
+        end
+
+        if (controller)
+          file_path = "controllers/#{file_name}_controller_spec.rb" 
+        end
+
+        if (!File.exist?("spec/#{file_path}"))
+          raise "No file found for #{file_path}" 
+        end
+
+        puts `ruby script/spec -c --format s spec/#{file_path}`
+
+      else
+        puts "invalid arguments. Specify the type of test, filename, and test name"
+      end
+    end
+  
   namespace :generate do
     
     desc "Populate spec sheets for models"
@@ -41,6 +97,7 @@ namespace :spec do
           "require '#{controller}'",
           "",
           "describe #{controller.camelize} do",
+          "  integrate_views",
           "",
           "end"
           ]

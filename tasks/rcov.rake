@@ -1,8 +1,3 @@
-# Lazy Testing
-# Kevin Gisi
-# 06/17/08
-# Copyright(c) 2008, released under MIT License
-
 namespace :rcov do
     
   # Runs all unit tests, and determines coverage
