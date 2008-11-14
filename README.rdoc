@@ -58,7 +58,7 @@ Runs coverage on your models
 
 Runs coverage on your controllers
 
-=== rake rcov:all
+=== rake rcov:full
 
 Runs coverage on models and controllers
 
