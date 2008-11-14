@@ -53,7 +53,7 @@ Requires the RCov gem and the rails_rcov plugin
 Runs coverage on your models
 === rake rcov:controllers
 Runs coverage on your controllers
-=== rake rcov:all
+=== rake rcov:full
 Runs coverage on models and controllers
 
 
