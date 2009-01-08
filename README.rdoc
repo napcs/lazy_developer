@@ -2,35 +2,35 @@
 Copyright (C) 2007-2008 Brian P. Hogan and Kevin Gisi
 
 Developers are lazy. I know I am. If I have to do things over and over, I want
-them to be automated. Maybe that's efficent and not lazy. However, lazy is a 
+them to be automated. Maybe that's efficient and not lazy. However, lazy is a 
 shorter word and it's funnier to call this plugin LazyDeveloper.
 
 This plugin provides some useful Rake tasks that will make your life a little
-eaiser. I use them in many of my projects and I invite you to do the same.
+easier. I use them in many of my projects and I invite you to do the same.
 
 = Usage
 == Databases
 
 === rake db:migrate
 
-The db:migrate task has been modified slightly. Running this task now clones your
+Everyone forgets to clone the test database when you make changes, so I decided to override rake:db:migrate.  Running this task now clones your
 test database, which is really useful if you run tests individually via TextMate
-or through the commandline.
+or through the command line.
 
 === rake db:remigrate
 
 Sometimes you just need to wipe out your database tables and start over. This
 task drops your tables and starts over by dropping the tables directly and then
 re-running your migrations. This provides a great way to test to make sure you
-haven't broken migrations at some point.
+haven't broken migrations at some point, which *will* happen to you at some point.
 
-=== rake db:export
+=== rake db:to_yaml (formerly rake:db:import)
 
-Dump your database to fixtures. Stores them in /test/fixtures/live. You can then use this to load the data 
-back into another database, even one of a different type
+Dump your database to fixtures. Stores them in RAILS_ROOT/production_data. You can then use this to load the data back into another database, even one of a different type. We've used this to move
+data from SQL Server to MySQL and back again.
 
-=== rake db:import
-Load fixtures from test/fixures/live into your database. Loads fixtures dumped by using rake db:export
+=== rake db:from_yaml (formerly rake:db:export)
+Load fixtures from RAILS_ROOT/production_data into your database. Loads fixtures dumped by using rake db:export
 
 == Subversion
 
@@ -68,7 +68,7 @@ Based on an idea from Geoffrey Grosenbach, you can run all tests in units\user_t
 
   rake test:units:user:all
 
-Or run a specific test by speficying all or part of a name. For example, if I 
+Or run a specific test by specifying all or part of a name. For example, if I 
 wanted to run the "test_create"  test case, I would use
 
   rake test:units:user:create
@@ -94,20 +94,6 @@ some of the built-in specs.
 
   rake spec:model:user
   rake spec:controller:sessions
-
-== Gems (Deprecated - will be removed very, very soon)
-
-Place a file called .gems in the root of your Rails project. The file should
-contain all of the gems you want to install.
-
-    tz_info
-    rcov
-    fastercsv
-    redcloth
-
-You can install all of these gems easily with
-
-  rake rails:install:gems
 
 == Plugins
 

@@ -1,8 +1,33 @@
 namespace :git do
   
+  namespace :stats do
+    
+    desc "Show untracked files"
+    task :untracked do
+        `git status --untracked`
+    end
+    
+    desc "show number of changes"
+    task :changes do
+      `git diff --shortstat`
+    end
+    
+    desc "see the number of commits"
+    task :commits do
+      `git log | grep ^commit | wc -l`
+    end
+    
+  end
+  
   desc "Commit all modified files and pull"
-  task :cpush do
+  task :cpull do
     `git commit -a -m #{ENV["M"]}`
+    `git pull origin master`
+  end
+  
+  desc "Commit all modified files and push"
+  task :commit do
+    `git commit -a -m "#{ENV["M"]}"`
     `git pull origin master`
   end
 
@@ -30,9 +55,6 @@ namespace :git do
     
   end
 
-  desc "see the number of commits"
-  task :commits do
-    `git log | grep ^commit | wc -l`
-  end
+
   
 end

@@ -1,42 +1,12 @@
+VERSION=1.1.0
 
-namespace :test do
-
-  rule /^test/ do |t|
-    root = t.name.gsub("test:","").split(/:/)
-    if root.length >= 3
-    flag = root[0]
-    file_name = root[1]
-    test_name = root[2]
-    test_name = "" if test_name == "all"
-
-
-      functional = (flag == "functionals" || flag == "f")
-      unit = (flag == "units" || flag == "u")
-
-
-      if (unit)
-        file_path = "unit/#{file_name}_test.rb" 
-      end
-
-      if (functional)
-        file_path = "functional/#{file_name}_controller_test.rb" 
-      end
-
-      if (!File.exist?("test/#{file_path}"))
-        raise "No file found for #{file_path}" 
-      end
-
-      sh "ruby test/#{file_path} -n /^test_#{test_name}/" 
-    else
-      puts "invalid arguments. Specify the type of test, filename, and test name"
-    end
+namespace :lazy do
+  desc "Shows the version of Lazy Developer this app uses"
+  task :version do
+    puts "LazyDeveloper v#{VERSION}"
   end
 
-  
- 
-  
 end
-
 
 
 namespace :db do
@@ -86,19 +56,7 @@ namespace :rails do
      end
     end
   
-    desc "installs the required gems for this project"
-    task :gems do
-     sudo = PLATFORM.include?("win32") ? "" : "sudo"
-     File.open("./.gems", "r") do |f|
-       while (line = f.gets)
-         begin
-         sh "#{sudo} gem install #{line}"
-         rescue
-           puts "Couldn't install #{line}"
-         end
-       end
-        
-     end
+
      
     end  #install
     

@@ -24,7 +24,7 @@ def write_file(filename, contents)
 end
 
 def habtm_fixtures(object)
-  path = RAILS_ROOT + "/test/fixtures/live"
+  path = RAILS_ROOT + "/production_data"
   
   hatbms = object.reflect_on_all_associations.collect{|i| i if i.macro == :has_and_belongs_to_many}.compact
   h = Hash.new
@@ -56,18 +56,17 @@ end
 namespace :db do
 
   desc "Load fixtures into the current environment's database.  Load specific fixtures using FIXTURES=x,y"
-  task :import => :environment do
+  task :from_yaml => :environment do
     require 'active_record/fixtures'
     ActiveRecord::Base.establish_connection(RAILS_ENV.to_sym)
-    (ENV['FIXTURES'] ? ENV['FIXTURES'].split(/,/) : Dir.glob(File.join(RAILS_ROOT, 'test', 'fixtures/live', '*.{yml,csv}'))).each do |fixture_file|
-      Fixtures.create_fixtures('test/fixtures/live', File.basename(fixture_file, '.*'))
+    (ENV['FIXTURES'] ? ENV['FIXTURES'].split(/,/) : Dir.glob(File.join(RAILS_ROOT, 'production_data', '*.{yml,csv}'))).each do |fixture_file|
+      Fixtures.create_fixtures('production_data', File.basename(fixture_file, '.*'))
     end
   end
  
-  desc "Dump all data to fixtures/live folder"
-  task :export => :environment do
-    path = RAILS_ROOT + "/test/fixtures/live"
-    #models = %W{Account Profile Portfolio Item Presentation Publication Experience Proficiency Skill Role}
+  desc "Dump all data to the production_data folder"
+  task :to_yaml => :environment do
+    path = RAILS_ROOT + "/production_data"
     
     models= Dir.glob("#{RAILS_ROOT}/app/models/*.rb").collect{|c| c.gsub("#{RAILS_ROOT}/app/models/", "").gsub(".rb", "").camelize}
     FileUtils.mkdir_p path rescue nil
@@ -78,6 +77,7 @@ namespace :db do
       str =  object.to_yaml
 
       write_file "#{path}/#{object.table_name}.yml", str
+      # get the association data for has_and_belongs_to_many
       habtm_fixtures(object)
       rescue
         "skipping - not a model"
