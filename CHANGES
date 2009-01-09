@@ -1,0 +1,26 @@
+1.1.1 
+ * Updated export tool to specify what's happening so users have feedback on longer running tasks
+ * updated export to grab 1000 rows at a time from the table instead of all records at once to save memory
+1.1.0
+ * Renamed db:import and db:export to db:from_yaml to db:to_yaml
+ * fixtures are now dumped to production_data instead of test/fixtures/live
+ * removed gem install system - no need for this now that Rails does it
+1.0.5
+ * RSpec support
+ * Improved rcov (gisikw)
+1.0.4
+ * SVN library added
+1.0.3
+ * db:export and db:import added! Migrate databases from one type to another!
+1.0.2
+ * Plugins added
+ * gem installer added
+ * RCov tasks added (gisikw)
+1.0.1
+ * magical test runner for test:unit
+ * cleanup task added
+ *remigrate task added
+1.0
+===
+ * rake db:migrate now runs db:test:clone
+ 

@@ -3,24 +3,34 @@ module ActiveRecord
   class Base
     
     def self.to_yaml
-      object_collection = self.find(:all)
+      chunk_size = 1000
       result = Hash.new
-      object_collection.each_with_index do |o, i|
-        attributes = o.attributes
-        result["#{self.name.to_s.downcase}_#{i}"] = o.attributes        
+      
+      (0..self.last.id / chunk_size).each do |offset|
+        object_collection = self.find(:all,
+          :limit => chunk_size,
+          :conditions => ["id > ?", offset * chunk_size])
+        object_collection.each_with_index do |o, i|
+          attributes = o.attributes
+          result["#{self.name.to_s.downcase}_#{i}"] = o.attributes        
+        end
       end
       result.to_yaml
+      
     end
+    
+
     
   end
   
 end
 
 def write_file(filename, contents)
-  puts filename
   File.open(filename, "w") do |f|
     f << contents
   end
+  puts "[FILE:] Wrote #{filename}"
+  
 end
 
 def habtm_fixtures(object)
@@ -73,7 +83,7 @@ namespace :db do
     models.each do |m|
       begin
       object = m.constantize
-      
+      puts "[DB] Dumping data for #{object}"
       str =  object.to_yaml
 
       write_file "#{path}/#{object.table_name}.yml", str
