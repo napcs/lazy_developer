@@ -18,6 +18,23 @@ namespace :db do
         Rake::Task['db:test:clone'].invoke
       end
     end
+    
+    # Override the original rake task when running a specific migration up
+    namespace :migrate do
+      task :up => :environment do
+        unless RAILS_ENV == "production"
+          puts "Preparing Test database"
+          Rake::Task['db:test:clone'].invoke
+        end
+      end
+      
+      task :down => :environment do
+        unless RAILS_ENV == "production"
+          puts "Preparing Test database"
+          Rake::Task['db:test:clone'].invoke
+        end
+      end
+    end
 
     # Drops and remigrates tables in case you hurt your database somehow
     # Borrowed from http://errtheblog.com/post/3
@@ -28,9 +45,7 @@ namespace :db do
         ActiveRecord::Base.connection.tables.each { |t| ActiveRecord::Base.connection.drop_table t }
         Rake::Task['db:migrate'].invoke
 
-    end
-  
-  
+    end 
 end
 
 
