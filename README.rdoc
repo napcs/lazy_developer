@@ -1,5 +1,5 @@
 =LazyDeveloper
-Copyright (C) 2007-2008 Brian P. Hogan and Kevin Gisi
+Copyright (C) 2007-2009 Brian P. Hogan and Kevin Gisi
 
 Developers are lazy. I know I am. If I have to do things over and over, I want
 them to be automated. Maybe that's efficient and not lazy. However, lazy is a 
@@ -13,9 +13,15 @@ easier. I use them in many of my projects and I invite you to do the same.
 
 === rake db:migrate
 
-Everyone forgets to clone the test database when you make changes, so I decided to override rake:db:migrate.  Running this task now clones your
+Everyone I know forgets to clone the test database when they make changes, so I decided to override rake:db:migrate so that when you run it, it automatically clones the
 test database, which is really useful if you run tests individually via TextMate
 or through the command line.
+
+  rake db:migrate
+  rake db:migrate:up
+  rake db:migrate:down
+
+are all supported.
 
 === rake db:remigrate
 
@@ -116,4 +122,4 @@ to clean up tmp, logs, and docs in one easy command.
 
 
 
-Copyright (c) 2007-2008 Brian Hogan and Kevin Gisi. Released under the MIT license
+Copyright (c) 2007-2009 Brian Hogan and Kevin Gisi. Released under the MIT license
