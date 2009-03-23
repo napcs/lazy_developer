@@ -1,4 +1,4 @@
-VERSION="1.1.1"
+VERSION="1.1.3"
 
 namespace :lazy do
   desc "Shows the version of Lazy Developer this app uses"
