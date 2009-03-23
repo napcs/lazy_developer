@@ -1,18 +1,21 @@
 require 'fileutils'
+require 'activerecord'
 module ActiveRecord
   class Base
     
     def self.to_yaml
       chunk_size = 1000
       result = Hash.new
-      
-      (0..self.last.id / chunk_size).each do |offset|
-        object_collection = self.find(:all,
-          :limit => chunk_size,
-          :conditions => ["id > ?", offset * chunk_size])
-        object_collection.each_with_index do |o, i|
-          attributes = o.attributes
-          result["#{self.name.to_s.downcase}_#{i}"] = o.attributes        
+      range = self.last.id rescue 0
+      if range > 0
+        (0..range / chunk_size).each do |offset|
+          object_collection = self.find(:all,
+            :limit => chunk_size,
+            :conditions => ["id > ?", offset * chunk_size])
+          object_collection.each_with_index do |o, i|
+            attributes = o.attributes
+            result["#{self.name.to_s.downcase}_#{i}"] = o.attributes        
+          end
         end
       end
       result.to_yaml
