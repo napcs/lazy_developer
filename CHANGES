@@ -1,3 +1,6 @@
+1.1.4
+ * Delete models, views, controllers and associated files with nuke
+ * Collapse large migration sets into a single migration to keep your code cleaner.
 1.1.3
  * Support for Rails 2.3 - No longer breaks Rake tasks.
  * Minor fix for exception raised when dumping empty tables
