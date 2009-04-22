@@ -54,14 +54,14 @@ namespace :nuke do
   
   def remove(file)
     scm = if File.exist?(".svn")
-            "svn"
+            "svn rm"
           elsif File.exist?(".git")
-            "git -r "
+            "git rm -r "
           else
             ""
           end
     
-    rm_cmd = scm.blank? ? "rm -rf" : "#{scm} rm"
+    rm_cmd = scm.blank? ? "rm -rf" : "#{scm}"
     puts `#{rm_cmd} #{file}`
   end
   
