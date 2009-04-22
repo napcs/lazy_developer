@@ -26,7 +26,7 @@ namespace :test do
         raise "No file found for #{file_path}" 
       end
 
-      sh "ruby test/#{file_path} -n /^test_#{test_name}/" 
+      sh "ruby -itest test/#{file_path} -n /^test_#{test_name}/" 
     else
       puts "invalid arguments. Specify the type of test, filename, and test name"
     end
