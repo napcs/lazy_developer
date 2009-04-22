@@ -56,7 +56,7 @@ namespace :nuke do
     scm = if File.exist?(".svn")
             "svn"
           elsif File.exist?(".git")
-            "git"
+            "git -r "
           else
             ""
           end

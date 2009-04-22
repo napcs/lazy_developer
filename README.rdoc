@@ -9,6 +9,39 @@ This plugin provides some useful Rake tasks that will make your life a little
 easier. I use them in many of my projects and I invite you to do the same.
 
 = Usage
+
+== Nuke
+The Nuke tasks make cleaning up your project a breeze.
+
+Let's say a previous developer generated some controllers, models, helpers, and views using scaffolding and a healthy mix of broken Test::Unit test cases. You've already generated a nice RESTful controller, correctly pluralized while the original ones are not. When you look in your controllers folder, you see this:
+
+  account_controller.rb
+  accounts_controller.rb
+  
+If you want to clean this up, you'd have to delete these files like so:
+
+  rm -rf app/controllers/account_controller.rb
+  rm -rf app/helpers/account_helper.rb
+  rm -rf app/views/account
+  rm -rf test/functionals/account_controller_test.rb
+  
+Well, with the Nuke tasks, you can do this easily:
+
+  rake nuke:vc:account
+  
+The 'vc' is for view and controller. It'll take out the whole controller and view combination, including the helper too.  It'll blow away any specs or tests associated, and it'll detect if you're using svn or git, so instead of deleting the files directly, it will schedule them for deletion via your source control system.
+
+The nuke tasks can be quite granular.
+
+ * rake nuke:model:user / rake nuke:m:user
+ * rake nuke:controller:user / rake nuke:c:user
+ * rake nuke:views:user / rake nuke:v:user
+ * rake nuke:helper:user
+ * rake nuke:vc:user
+ * rake nuke:mvc:user
+ 
+The only thing these tasks won't do is remove migrations, and that's cos I think that's dangerous
+
 == Databases
 
 === rake db:migrate
@@ -22,6 +55,9 @@ or through the command line.
   rake db:migrate:down
 
 are all supported.
+
+=== rake db:migrate:compact
+Uses schema.rb to construct a brand new clean migration and moves all of your existing migrations out of the way. This might at first seem to violate the spirit of migrations, but honestly sometimes large projects have a LOT of migrations and it can get difficult to manage these files.
 
 === rake db:remigrate
 
