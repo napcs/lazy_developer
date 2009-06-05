@@ -15,9 +15,9 @@ namespace :db do
       lines = file.split("\n")     
      
       index_regex = /add_index "(.*)", (.*):name => "(.*)"/
-      tables = lines.collect{|line| "  drop_table #{$1}" if line =~ table_regex }
-      
       table_regex = /create_table (.*),(.*)/
+      
+      tables = lines.collect{|line| "  drop_table #{$1}" if line =~ table_regex }
       indexes = lines.collect{|line| "  remove_index :#{$1}, :name => :#{$3}" if line =~ index_regex}
       
       # hack to correct spacing so it "looks pretty"
