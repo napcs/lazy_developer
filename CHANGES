@@ -1,3 +1,5 @@
+1.1.5
+ * Small bug fix for the db:compact task (dtrueman)
 1.1.4
  * Delete models, views, controllers and associated files with nuke
  * Collapse large migration sets into a single migration to keep your code cleaner.
