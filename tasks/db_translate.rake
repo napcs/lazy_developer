@@ -1,23 +1,31 @@
 require 'fileutils'
-require 'activerecord'
+require 'activerecord' unless Rails::VERSION::STRING.to_f < 2.3
 module ActiveRecord
   class Base
     
     def self.to_yaml
       chunk_size = 1000
       result = Hash.new
-      range = self.last.id rescue 0
+      begin
+        range = self.find(:first, :order => "id desc").id
+      rescue ActiveRecord::RecordNotFound => e
+        range = 0  
+        puts "No records extracted"
+      end      
+      
+      
       if range > 0
         (0..range / chunk_size).each do |offset|
           object_collection = self.find(:all,
             :limit => chunk_size,
-            :conditions => ["id > ?", offset * chunk_size])
+            :conditions => ["id > ? and id < ?", (offset * chunk_size), ((offset + 1) * chunk_size)])
           object_collection.each_with_index do |o, i|
             attributes = o.attributes
-            result["#{self.name.to_s.downcase}_#{i}"] = o.attributes        
+            result["#{self.name.to_s.downcase}_#{attributes["id"]}"] = o.attributes        
           end
         end
       end
+      puts "#{self.name} = #{result.length} records"
       result.to_yaml
       
     end
@@ -49,10 +57,10 @@ def habtm_fixtures(object)
     
     h = Hash.new
     object.find(:all).each_with_index do |o, i|
-       associations = o.send m.klass.to_s.downcase.pluralize
+       associations = o.send m.klass.table_name
        associations.each do |a|
-         h[a.class.to_s.downcase + i.to_s] = {"#{o.class.to_s.downcase}_id" => o.id,
-                "#{a.class.to_s.downcase}_id" => a.id
+         h[a.class.to_s.underscore + i.to_s] = {"#{o.class.to_s.underscore}_id" => o.id,
+                "#{a.class.to_s.underscore}_id" => a.id
                 }
        end 
        
@@ -72,7 +80,8 @@ namespace :db do
   task :from_yaml => :environment do
     require 'active_record/fixtures'
     ActiveRecord::Base.establish_connection(RAILS_ENV.to_sym)
-    (ENV['FIXTURES'] ? ENV['FIXTURES'].split(/,/) : Dir.glob(File.join(RAILS_ROOT, 'production_data', '*.{yml,csv}'))).each do |fixture_file|
+    (ENV['FIXTURES'] ? ENV['FIXTURES'].split(/,/) : Dir.glob(File.join(RAILS_ROOT, 'production_data', '*.yml'))).each do |fixture_file|
+      puts "importing #{fixture_file}"
       Fixtures.create_fixtures('production_data', File.basename(fixture_file, '.*'))
     end
   end

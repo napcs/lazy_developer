@@ -1,3 +1,10 @@
+1.1.6
+ * Fix table names and column names not computing properly for habtm associations
+ * Fixed major problems with db:to_yaml
+   * fixture names now use the id rather than an incrementing number
+   * Offset for chunking was completely bad. Thanks to Kevin for helping me fix it.
+ * Should now work for Rails versions prior to 2.0.
+ * db:from_yaml now tells you what's importing
 1.1.5
  * Small bug fix for the db:compact task (dtrueman)
 1.1.4
