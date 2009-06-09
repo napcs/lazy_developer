@@ -1,5 +1,5 @@
 require 'fileutils'
-require 'activerecord'
+require 'activerecord' unless Rails.version.to_f < 2.3
 module ActiveRecord
   class Base
     
