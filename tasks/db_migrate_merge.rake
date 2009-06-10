@@ -45,7 +45,6 @@ end
     backups = RAILS_ROOT+"/db/migrate_#{version}"
     
     svn=File.exist?(RAILS_ROOT+"/db/migrate/.svn")
-    puts "SVN: #{svn}"
     if svn
       `svn mkdir #{backups}`
       Dir.glob(RAILS_ROOT+"/db/migrate/*").each do |migration|
