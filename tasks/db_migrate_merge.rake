@@ -48,7 +48,7 @@ end
     puts "SVN: #{svn}"
     if svn
       `svn mkdir #{backups}`
-      Dir.glob(#{RAILS_ROOT+"/db/migrate/*").each do |migration|
+      Dir.glob(RAILS_ROOT+"/db/migrate/*").each do |migration|
         `svn mv #{migration} #{backups}`
       end
     else
