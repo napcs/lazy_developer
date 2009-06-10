@@ -48,9 +48,9 @@ end
     puts "SVN: #{svn}"
     if svn
       puts "1"
-      `svn mv #{RAILS_ROOT+"/db/migrate"} #{backups}`
+      `svn mkdir #{backups}`
       puts "2"
-      `svn mkdir #{RAILS_ROOT+"/db/migrate"}`
+      `svn mv #{RAILS_ROOT+"/db/migrate/*"} #{backups}`
     else
       FileUtils.mv(RAILS_ROOT+"/db/migrate", backups)
       FileUtils.mkdir(RAILS_ROOT+"/db/migrate")
