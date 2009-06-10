@@ -47,10 +47,10 @@ end
     svn=File.exist?(RAILS_ROOT+"/db/migrate/.svn")
     puts "SVN: #{svn}"
     if svn
-      puts "1"
       `svn mkdir #{backups}`
-      puts "2"
-      `svn mv #{RAILS_ROOT+"/db/migrate/*"} #{backups}`
+      Dir.glob(#{RAILS_ROOT+"/db/migrate/*").each do |migration|
+        `svn mv #{migration} #{backups}`
+      end
     else
       FileUtils.mv(RAILS_ROOT+"/db/migrate", backups)
       FileUtils.mkdir(RAILS_ROOT+"/db/migrate")
@@ -62,7 +62,6 @@ end
       f << new_migration
     end
 
-    puts "3"
     `svn add #{new_file}` if svn
     
     puts "Created #{new_file}."
