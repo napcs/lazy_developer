@@ -3,7 +3,7 @@ namespace :db do
   
   namespace :migrate do
     
-    desc "Uses schema.rb to build a new base migration with the timestamp of the current migration. Other migrations are moved to a backup folder."
+    desc "Uses schema.rb to build a new base migration with the timestamp of the current migration. Other migrations are   moved to a backup folder."
     task :compact => [:abort_if_pending_migrations, :environment] do 
       
       file = File.read("#{RAILS_ROOT}/db/schema.rb")
@@ -43,13 +43,27 @@ end
 }
     version =  ActiveRecord::Migrator.current_version
     backups = RAILS_ROOT+"/db/migrate_#{version}"
-    FileUtils.mv(RAILS_ROOT+"/db/migrate", backups)
-    FileUtils.mkdir(RAILS_ROOT+"/db/migrate")
-    new_file = RAILS_ROOT+"/db/migrate/#{version}_initial_migration.rb"
     
+    svn=File.exist?(RAILS_ROOT+"/db/migrate/.svn")
+    puts "SVN: #{svn}"
+    if svn
+      puts "1"
+      `svn mv #{RAILS_ROOT+"/db/migrate"} #{backups}`
+      puts "2"
+      `svn mkdir #{RAILS_ROOT+"/db/migrate"}`
+    else
+      FileUtils.mv(RAILS_ROOT+"/db/migrate", backups)
+      FileUtils.mkdir(RAILS_ROOT+"/db/migrate")
+    end
+    
+    new_file = RAILS_ROOT+"/db/migrate/#{version}_initial_migration.rb"
+
     File.open(new_file, "w") do |f|
       f << new_migration
     end
+
+    puts "3"
+    `svn add #{new_file}` if svn
     
     puts "Created #{new_file}."
     puts "Previous migrations are in #{backups}"
