@@ -1,3 +1,6 @@
+1.1.7
+ * Added support for checking coverage for model specs, controller specs, view specs, helper specs, and specs for files in the lib folder.
+ * copied rcov:* tasks to "test" namespace and deprecating old ones.
 1.1.6
  * Fix table names and column names not computing properly for habtm associations
  * Fixed major problems with db:to_yaml
