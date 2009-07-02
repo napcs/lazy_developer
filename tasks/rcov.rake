@@ -1,36 +1,39 @@
 namespace :spec do
-  require 'spec/rake/spectask'
+  require 'spec/rake/spectask' if defined? Spec::Rake::SpecTask
   spec_prereq = File.exist?(File.join(RAILS_ROOT, 'config', 'database.yml')) ? "db:test:prepare" : :noop
   
   
   [:models, :controllers, :views, :helpers, :lib].each do |sub|
     namespace sub do
       desc "RCov for #{sub}"
-      Spec::Rake::SpecTask.new("rcov" => spec_prereq) do |t|
-        t.spec_opts = ['--options', "\"#{RAILS_ROOT}/spec/spec.opts\""]
-        t.spec_files = FileList["spec/#{sub}/**/*_spec.rb"]
-        t.rcov = true
-        
-        t.rcov_opts = lambda do
-          reg_exp = []
-          reg_exp << case sub.to_s
-                      when 'models'
-                         'app\/models'
-                      when 'views'
-                         'app\/views'
-                      when 'controllers'
-                         'app\/controllers'
-                      when 'helpers'
-                         'app\/helpers'
-                      when 'lib' 
-                        'lib'
-                     end
-          reg_exp.map!{ |m| "(#{m})" }
-          rcov_opts = " -x \"^(?!#{reg_exp.join('|')})\""
-          rcov_opts.map {|l| l.chomp.split " "}.flatten
+
+      if defined? Spec::Rake::SpecTask
+        Spec::Rake::SpecTask.new("rcov" => spec_prereq) do |t|
+          t.spec_opts = ['--options', "\"#{RAILS_ROOT}/spec/spec.opts\""]
+          t.spec_files = FileList["spec/#{sub}/**/*_spec.rb"]
+          t.rcov = true
+          
+          t.rcov_opts = lambda do
+            reg_exp = []
+            reg_exp << case sub.to_s
+                        when 'models'
+                           'app\/models'
+                        when 'views'
+                           'app\/views'
+                        when 'controllers'
+                           'app\/controllers'
+                        when 'helpers'
+                           'app\/helpers'
+                        when 'lib' 
+                          'lib'
+                       end
+            reg_exp.map!{ |m| "(#{m})" }
+            rcov_opts = " -x \"^(?!#{reg_exp.join('|')})\""
+            rcov_opts.map {|l| l.chomp.split " "}.flatten
+          end
         end
-     
       end
+
     end
   end
 end
