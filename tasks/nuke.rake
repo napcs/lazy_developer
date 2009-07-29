@@ -5,7 +5,7 @@ namespace :nuke do
     
     root = t.name.gsub("nuke:", "").split(/:/)
     type = root[0]
-    file = root[1].underscore
+    file = root[1].classify.tableize
     
     puts "Nuking #{type} named #{file}"
 
@@ -30,22 +30,24 @@ namespace :nuke do
   end
   
   def nuke_view(f)
-        remove "app/views/#{f}"
-        remove "spec/views/#{f}"
-        
+    remove "app/views/#{f}"
+    remove "spec/views/#{f}"
   end
   
   def nuke_model(f)
-    remove "app/models/#{f}.rb"
-    remove "spec/models/#{f}_spec.rb"
-    remove "test/unit/#{f}_test.rb"
+    s = f.singularize
+    remove "app/models/#{s}.rb"
+    remove "spec/models/#{s}_spec.rb"
+    remove "test/unit/#{s}_test.rb"
+    remove "test/fixtures/#{f}.yaml" #plural
+    remove "test/unit/helpers/#{f}_helper_test.rb" #plural
   end
   
   def nuke_helper(f)
     remove "app/helpers/#{f}_helper.rb"
     remove "spec/helpers/#{f}_helper_spec.rb"
-    
   end
+
   def nuke_controller(f)
     remove "app/controllers/#{f}_controller.rb"
     remove "spec/controllers/#{f}_controller_spec.rb"
@@ -53,17 +55,12 @@ namespace :nuke do
   end
   
   def remove(file)
-    scm = if File.exist?(".svn")
-            "svn rm"
-          elsif File.exist?(".git")
-            "git rm -r --ignore-unmatch"
-          else
-            ""
-          end
-    
+    return unless File.exist?(file)
+
+    scm = File.exist?(".svn") ? "svn rm" : ""
     rm_cmd = scm.blank? ? "rm -rf" : "#{scm}"
-    puts `#{rm_cmd} #{file}`
+    puts 'delete  '.rjust(12) + file
+    `#{rm_cmd} #{file}`
   end
-  
   
 end
