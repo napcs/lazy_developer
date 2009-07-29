@@ -1,3 +1,9 @@
+1.1.8
+ * nuke now assumes singular inflection for model files of given name
+ * fixtures are nuked as well
+ * now nuking test/unit/helpers tests along with the model
+ * list of deleted files now prints to command line
+ * removed usage of 'git rm' as unnecessary & did not work with files untracked by git
 1.1.7
  * Added support for checking coverage for model specs, controller specs, view specs, helper specs, and specs for files in the lib folder.
  * copied rcov:* tasks to "test" namespace and deprecating old ones.
