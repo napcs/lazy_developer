@@ -1,6 +1,9 @@
 namespace :nuke do
   
   rule /^nuke/ do |t|
+    if File.exist?('script/rails_generate')
+      File.open("log/generator.log","a"){|f|f.puts("rake "+t.to_s)}  
+    end
     Rake::Task['environment'].invoke
     
     root = t.name.gsub("nuke:", "").split(/:/)

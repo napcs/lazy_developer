@@ -1,5 +1,5 @@
 =LazyDeveloper
-Copyright (C) 2007-2009 Brian P. Hogan and Kevin Gisi
+Copyright (C) 2007-2009 Brian P. Hogan and Kevin W. Gisi
 
 Developers are lazy. I know I am. If I have to do things over and over, I want
 them to be automated. Maybe that's efficient and not lazy. However, lazy is a 
@@ -189,6 +189,14 @@ Run
 
 to clean up tmp, logs, and docs in one easy command.
 
+== Generators
 
+It's easy to forget what generators you may have run. Now, script/generate commands along with nuke commands can all be logged. Run
 
-Copyright (c) 2007-2009 Brian Hogan and Kevin Gisi. Released under the MIT license
+  rake lazy:logger:install
+
+to have these commands logged to log/generator.log. This hook can be uninstalled with
+
+  rake lazy:logger:remove
+
+Copyright (c) 2007-2009 Brian P. Hogan and Kevin W. Gisi. Released under the MIT license
