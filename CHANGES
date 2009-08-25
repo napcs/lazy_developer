@@ -1,3 +1,5 @@
+1.1.9
+ * Fixed version string to prevent collisions with other libraries.
 1.1.8
  * nuke now assumes singular inflection for model files of given name
  * fixtures are nuked as well

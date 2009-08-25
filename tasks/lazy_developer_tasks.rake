@@ -1,4 +1,4 @@
-VERSION="1.1.8"
+LAZY_DEVELOPER_VERSION="1.1.9"
 
 
 
@@ -9,7 +9,7 @@ namespace :lazy do
   
   desc "Shows the version of Lazy Developer this app uses"
   task :version do
-    puts "LazyDeveloper v#{VERSION}"
+    puts "LazyDeveloper v#{LAZY_DEVELOPER_VERSION}"
   end
 
 end
