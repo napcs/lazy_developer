@@ -73,12 +73,12 @@ data from SQL Server to MySQL and back again.
 
 Optionally you can specify only the models you want to dump data for by passing a list of model names as a comma delimited list to the MODELS environment variable.
   
-    For example, if I wanted to dump data for the User, Role, and RoleUsers models and not the rest of the models in my app, any of the following would work:
+For example, if I wanted to dump data for the User, Role, and RoleUsers models and not the rest of the models in my app, any of the following would work:
     
-`    rake db:to_yaml MODELS=User,Role,RoleUser  #Model names
-    rake db:to_yaml MODELS=user.rb,role.rb,role_user.rb  #File names
-    rake db:to_yaml MODELS=user,role,role_user  #File names minus their extension
-    rake db:to_yaml MODELS=users,roles,role_users #DB table names
+  rake db:to_yaml MODELS=User,Role,RoleUser  #Model names
+  rake db:to_yaml MODELS=user.rb,role.rb,role_user.rb  #File names
+  rake db:to_yaml MODELS=user,role,role_user  #File names minus their extension
+  rake db:to_yaml MODELS=users,roles,role_users #DB table names
 
 === rake db:from_yaml
 Load fixtures from RAILS_ROOT/production_data into your database. Loads fixtures dumped by using rake db:export
