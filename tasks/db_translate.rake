@@ -88,12 +88,58 @@ namespace :db do
  
   desc "Dump all data to the production_data folder"
   task :to_yaml => :environment do
+    ############ This is to give a time calculation at the end ##################
+      require 'time'
+      include ActionView::Helpers::TextHelper
+
+      def seconds_fraction_to_time(seconds)
+        hours = 0
+        mins = 0
+        if seconds >=  60
+          mins = (seconds / 60).to_i 
+          seconds = (seconds % 60 ).to_i
+
+          if mins >= 60 then
+            hours = (mins / 60).to_i 
+            mins = (mins % 60).to_i
+          end
+        else
+          mins = 0
+          hours = 0
+          seconds = seconds.floor
+        end
+        
+        total_time = ""
+        if hours > 0
+          total_time << pluralize(hours, 'hour') + ", "
+        end
+
+        if mins > 0
+          total_time << pluralize(mins, 'minute') + " and "
+        end
+
+        if seconds > 0
+          total_time << pluralize(seconds, 'second')
+        else
+          total_time << "0 seconds"
+        end
+
+        total_time
+      end
+    ################################################################################
+    
     path = RAILS_ROOT + "/production_data"
     
-    models= Dir.glob("#{RAILS_ROOT}/app/models/*.rb").collect{|c| c.gsub("#{RAILS_ROOT}/app/models/", "").gsub(".rb", "").camelize}
+    models = ENV["MODELS"].split(",").collect{ |m| m.camelize.singularize.gsub(".rb", "")} if ENV["MODELS"]
+    models ||= Dir.glob("#{RAILS_ROOT}/app/models/*.rb").collect{|c| c.gsub("#{RAILS_ROOT}/app/models/", "").gsub(".rb", "").camelize}
+    
+    start_time = Time.now
+    
     FileUtils.mkdir_p path rescue nil
     models.each do |m|
       begin
+      this_models_start_time = Time.now
+      
       object = m.constantize
       puts "[DB] Dumping data for #{object}"
       str =  object.to_yaml
@@ -101,10 +147,13 @@ namespace :db do
       write_file "#{path}/#{object.table_name}.yml", str
       # get the association data for has_and_belongs_to_many
       habtm_fixtures(object)
+      
+      puts "[TIME] It took #{seconds_fraction_to_time(Time.now - this_models_start_time.to_time)} to export the data for the #{m} model"
       rescue
-        "skipping - not a model"
+        puts "[ERROR] skipping '#{m}' - not a model"
       end
     end
+    puts "[TIME] It took #{seconds_fraction_to_time(Time.now - start_time.to_time)} total to export the data your requested"
     
   end
   
