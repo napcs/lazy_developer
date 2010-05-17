@@ -1,5 +1,6 @@
-1.1.9.1
- * Fixed deprecation warning for activerecord
+1.2.0
+ * Fixed deprecation warning for activerecord in Rails 2.3
+ * Changed db:test:clone to db:test:prepare for migrate, up, and down methods.
 1.1.9
  * Fixed version string to prevent collisions with other libraries.
 1.1.8

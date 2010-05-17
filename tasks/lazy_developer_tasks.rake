@@ -1,4 +1,4 @@
-LAZY_DEVELOPER_VERSION="1.1.9.1"
+LAZY_DEVELOPER_VERSION="1.2.0"
 
 
 
@@ -21,7 +21,7 @@ namespace :db do
     task :migrate do
        unless RAILS_ENV == "production"
         puts "Preparing Test database"
-        Rake::Task['db:test:clone'].invoke
+        Rake::Task['db:test:prepare'].invoke
       end
     end
     
@@ -30,14 +30,14 @@ namespace :db do
       task :up => :environment do
         unless RAILS_ENV == "production"
           puts "Preparing Test database"
-          Rake::Task['db:test:clone'].invoke
+          Rake::Task['db:test:prepare'].invoke
         end
       end
       
       task :down => :environment do
         unless RAILS_ENV == "production"
           puts "Preparing Test database"
-          Rake::Task['db:test:clone'].invoke
+          Rake::Task['db:test:prepare'].invoke
         end
       end
     end
