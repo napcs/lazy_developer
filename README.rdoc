@@ -10,7 +10,51 @@ easier. I use them in many of my projects and I invite you to do the same.
 
 = Usage
 
-== Nuke
+== Databases
+
+=== rake db:migrate
+
+Everyone I know forgets to clone the test database when they make changes, so I decided to override rake:db:migrate so that when you run it, it automatically clones the
+test database, which is really useful if you run tests individually via TextMate
+or through the command line.
+
+  rake db:migrate
+  rake db:migrate:up
+  rake db:migrate:down
+
+are all supported. As of version 1.2.0, this task calls rake db:test:prepare whenever invoked.
+
+=== rake db:migrate:compact
+Uses schema.rb to construct a brand new clean migration and moves all of your existing migrations out of the way. This might at first seem to violate the spirit of migrations, but honestly sometimes large projects have a LOT of migrations and it can get difficult to manage these files.
+
+=== rake db:remigrate
+
+Sometimes you just need to wipe out your database tables and start over. This
+task drops your tables and starts over by dropping the tables directly and then
+re-running your migrations. This provides a great way to test to make sure you
+haven't broken migrations at some point, which *will* happen to you at some point.
+
+=== rake db:to_yaml
+
+Dump your database to fixtures. Stores them in RAILS_ROOT/production_data. You can then use this to load the data back into another database, even one of a different type. We've used this to move
+data from SQL Server to MySQL and back again.
+
+Optionally you can specify only the models you want to dump data for by passing a list of model names as a comma delimited list to the MODELS environment variable.
+  
+For example, if I wanted to dump data for the User, Role, and RoleUsers models and not the rest of the models in my app, any of the following would work:
+    
+  rake db:to_yaml MODELS=User,Role,RoleUser  #Model names
+  rake db:to_yaml MODELS=user.rb,role.rb,role_user.rb  #File names
+  rake db:to_yaml MODELS=user,role,role_user  #File names minus their extension
+  rake db:to_yaml MODELS=users,roles,role_users #DB table names
+
+=== rake db:from_yaml
+Load fixtures from RAILS_ROOT/production_data into your database. Loads fixtures dumped by using rake db:export
+
+
+== Cleaning Up Files
+
+===Nuke
 The Nuke tasks make cleaning up your project a breeze.
 
 Let's say a previous developer generated some controllers, models, helpers, and views using scaffolding and a healthy mix of broken Test::Unit test cases. You've already generated a nice RESTful controller, correctly pluralized while the original ones are not. When you look in your controllers folder, you see this:
@@ -42,46 +86,6 @@ The nuke tasks can be quite granular.
  
 The only thing these tasks won't do is remove migrations, and that's cos I think that's dangerous
 
-== Databases
-
-=== rake db:migrate
-
-Everyone I know forgets to clone the test database when they make changes, so I decided to override rake:db:migrate so that when you run it, it automatically clones the
-test database, which is really useful if you run tests individually via TextMate
-or through the command line.
-
-  rake db:migrate
-  rake db:migrate:up
-  rake db:migrate:down
-
-are all supported.
-
-=== rake db:migrate:compact
-Uses schema.rb to construct a brand new clean migration and moves all of your existing migrations out of the way. This might at first seem to violate the spirit of migrations, but honestly sometimes large projects have a LOT of migrations and it can get difficult to manage these files.
-
-=== rake db:remigrate
-
-Sometimes you just need to wipe out your database tables and start over. This
-task drops your tables and starts over by dropping the tables directly and then
-re-running your migrations. This provides a great way to test to make sure you
-haven't broken migrations at some point, which *will* happen to you at some point.
-
-=== rake db:to_yaml
-
-Dump your database to fixtures. Stores them in RAILS_ROOT/production_data. You can then use this to load the data back into another database, even one of a different type. We've used this to move
-data from SQL Server to MySQL and back again.
-
-Optionally you can specify only the models you want to dump data for by passing a list of model names as a comma delimited list to the MODELS environment variable.
-  
-For example, if I wanted to dump data for the User, Role, and RoleUsers models and not the rest of the models in my app, any of the following would work:
-    
-  rake db:to_yaml MODELS=User,Role,RoleUser  #Model names
-  rake db:to_yaml MODELS=user.rb,role.rb,role_user.rb  #File names
-  rake db:to_yaml MODELS=user,role,role_user  #File names minus their extension
-  rake db:to_yaml MODELS=users,roles,role_users #DB table names
-
-=== rake db:from_yaml
-Load fixtures from RAILS_ROOT/production_data into your database. Loads fixtures dumped by using rake db:export
 
 == Subversion
 
