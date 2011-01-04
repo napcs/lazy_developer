@@ -1,5 +1,6 @@
 namespace :nuke do
   
+  
   rule /^nuke/ do |t|
     Rake::Task['environment'].invoke
     
@@ -25,6 +26,9 @@ namespace :nuke do
         nuke_controller(file)
       when "helper", "h"
         nuke_helper(file)
+      when "empty_helpers"
+        remove_empty_helpers
+        
                   
     end    
   end
@@ -62,6 +66,20 @@ namespace :nuke do
     rm_cmd = scm.blank? ? "rm -rf" : "#{scm}"
     puts 'delete  '.rjust(12) + file
     `#{rm_cmd} #{file}`
+  end
+  
+  def remove_empty_helpers
+    helpers = Dir.chdir("app/helpers"){Dir.glob("*")}
+
+    helpers.each do |helper|
+      helpername =  helper.gsub(".rb", "").camelize.constantize
+      unless helpername.instance_methods.any?
+        puts "#{helpername} and its test were removed as the module has no methods."
+         FileUtils.rm "app/helpers/#{helper}"
+         FileUtils.rm "spec/helpers/#{helper.gsub(".rb", "")}_spec.rb" if File.exist?("spec")
+
+      end
+    end
   end
   
 end

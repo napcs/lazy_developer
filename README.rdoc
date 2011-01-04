@@ -1,5 +1,5 @@
 =LazyDeveloper
-Copyright (C) 2007-2009 Brian P. Hogan and Kevin Gisi
+Copyright (C) 2007-2011 Brian P. Hogan and Kevin Gisi
 
 Developers are lazy. I know I am. If I have to do things over and over, I want
 them to be automated. Maybe that's efficient and not lazy. However, lazy is a 
@@ -7,6 +7,22 @@ shorter word and it's funnier to call this plugin LazyDeveloper.
 
 This plugin provides some useful Rake tasks that will make your life a little
 easier. I use them in many of my projects and I invite you to do the same.
+
+= Installation
+
+This plugin supports Rails 2 and Rails 3.
+
+== Rails 3 installation
+
+ rails plugin install git@github.com:napcs/lazy_developer.git
+ 
+== Rails 2 installation
+
+Rails 2 support is in the rails2 branch. Install it like this:
+
+ ruby script/plugin install  git@github.com:napcs/lazy_developer.git -r rails2
+ 
+ 
 
 = Usage
 
@@ -22,7 +38,7 @@ or through the command line.
   rake db:migrate:up
   rake db:migrate:down
 
-are all supported. As of version 1.2.0, this task calls rake db:test:prepare whenever invoked.
+are all supported. This task calls rake db:test:prepare whenever invoked.
 
 === rake db:migrate:compact
 Uses schema.rb to construct a brand new clean migration and moves all of your existing migrations out of the way. This might at first seem to violate the spirit of migrations, but honestly sometimes large projects have a LOT of migrations and it can get difficult to manage these files.
@@ -85,6 +101,14 @@ The nuke tasks can be quite granular.
  * rake nuke:mvc:user
  
 The only thing these tasks won't do is remove migrations, and that's cos I think that's dangerous
+
+=== Nuking Empty Helpers
+
+When you create controllers, Rails insists on creating a helper to go with them, and most of the time those files are empty. You can get rid of those with
+
+   rake nuke:empty_helpers
+   
+It'll take care of the tests for you too.
 
 
 == Subversion
