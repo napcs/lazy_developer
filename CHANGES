@@ -1,7 +1,8 @@
+1.3.0
+ * Removed deprecation warnings for Rails 3
 1.2.1
  * Added task to remove empty helpers
  * Added installation steps for Rails 3 and Rails 2
-
 1.2.0
  * Fixed deprecation warning for activerecord in Rails 2.3
  * Changed db:test:clone to db:test:prepare for migrate, up, and down methods.
