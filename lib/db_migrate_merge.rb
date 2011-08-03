@@ -1,26 +1,28 @@
 class DbMigrateMerge
   def self.generate_down_indexes lines
     indexes = lines.collect do |line|
-      multiple_columns_regex = /add_index "(.*)", \[([^\]]+)\], :name => "(.*)"/
-      single_columns_regex = /add_index "(.*)", (.*), :name => "(.*)"/
+      columns_regex = /add_index "[^"]+", ?(?::column ?=> ?)?(\[[^\]]+\]|"[^"]+")/
 
-      if line =~ multiple_columns_regex
+      index_regex = /add_index "[^"]+", ?(?::name ?=> ?)?"([^"]+)"/
+      table_regex = /add_index "([^"]+)"/
+
+      if line =~ table_regex
         table_name = $1
-        column_names = $2
-        index_name = $3
-        "remove_index :#{table_name}, [#{column_names}], :name => :#{index_name}"
-
-      elsif line =~ single_columns_regex
-        table_name = $1
-        column_name = $2
-        index_name = $3
-        "remove_index :#{table_name}, #{column_name}, :name => :#{index_name}"
-
+        columns = line =~ columns_regex
+        if columns
+          if $1.index "["
+            "remove_index :#{table_name}, :column => #{$1}"
+          else
+            "remove_index :#{table_name}, :column => [#{$1}]"
+          end
+        elsif line =~ index_regex
+          "remove_index :#{table_name}, :name => \"#{$1}\""
+        end
       end
+
     end
 
     indexes.compact.reverse.join("\n  ")
   end
-
 
 end

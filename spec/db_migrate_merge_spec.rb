@@ -3,39 +3,89 @@ require File.join(current_directory, '../lib/db_migrate_merge')
 
 describe DbMigrateMerge do
   describe "#remove_index" do
-    it "handles indexes with only one column name" do
-
-      line1 = <<-eof
-add_index "versions", "versioned_id", :name => "index_versions_on_versioned_type_and_versioned_id"
-      eof
-
-      line2 = <<-eof
-        "add_index "audited", "transaction", :name => "index_audited_on_transaction"
+    #___________________
+   it "handles indexes with just a column name" do
+      line = <<-eof
+add_index "versions", "versioned_type"
 eof
 
-      expected_line_1 = <<-eof
-remove_index :audited, "transaction", :name => :index_audited_on_transaction
+      expected = <<-ex
+remove_index :versions, :column => ["versioned_type"]
+ex
+
+      DbMigrateMerge.generate_down_indexes([line]).should == expected[0..-2]
+    end
+
+
+
+
+
+    #___________________
+    it "handles indexes with only one column name and an index name" do
+
+      line = <<-eof
+add_index "audited", "transaction", :name => "index_audited_on_transaction"
 eof
 
-expected_line_2 = <<-eof
-  remove_index :versions, "versioned_id", :name => :index_versions_on_versioned_type_and_versioned_id
+      expected_line = <<-eof
+remove_index :audited, :column => ["transaction"]
 eof
 
-      expected = [expected_line_1,expected_line_2].join()[0..-2]
-      DbMigrateMerge.generate_down_indexes([line1,line2]).should == expected
+      expected = [expected_line].join()[0..-2]
+      DbMigrateMerge.generate_down_indexes([line]).should == expected
 
     end
 
 
-    it "handles indexes with an array of column names" do
+    #___________________
+    it "works with an array of column names and an index name" do
       line = <<-eof
 add_index "versions", ["versioned_type", "versioned_id"], :name => "index_versions_on_versioned_type_and_versioned_id"
 eof
 
-expected = <<-ex
-remove_index :versions, ["versioned_type", "versioned_id"], :name => :index_versions_on_versioned_type_and_versioned_id
+      expected = <<-ex
+remove_index :versions, :column => ["versioned_type", "versioned_id"]
 ex
       DbMigrateMerge.generate_down_indexes([line]).should == expected[0..-2]
+    end
+
+     it "handles indexes with a column name with the :column => hash rocket syntax" do
+      line = <<-eof
+add_index "versions", :column => ["versioned_type", "versioned_id"], :name => "index_versions_on_versioned_type_and_versioned_id"
+eof
+
+      expected = <<-ex
+remove_index :versions, :column => ["versioned_type", "versioned_id"]
+ex
+
+      DbMigrateMerge.generate_down_indexes([line]).should == expected[0..-2]
+
+      line = <<-eof
+add_index "versions", :column => ["versioned_type"], :name => "index_versions_on_versioned_type"
+eof
+
+      expected = <<-ex
+remove_index :versions, :column => ["versioned_type"]
+ex
+
+      DbMigrateMerge.generate_down_indexes([line]).should == expected[0..-2]
+
+
+    end
+
+
+
+     it "handles indexes with a column name with the :column => hash rocket syntax" do
+      line = <<-eof
+add_index "versions", :name => "index_versions_on_versioned_type_and_versioned_id"
+eof
+
+      expected = <<-ex
+remove_index :versions, :name => "index_versions_on_versioned_type_and_versioned_id"
+ex
+
+      DbMigrateMerge.generate_down_indexes([line]).should == expected[0..-2]
+
     end
   end
 
