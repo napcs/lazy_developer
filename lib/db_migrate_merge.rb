@@ -8,7 +8,7 @@ class DbMigrateMerge
 
       if line =~ table_regex
         table_name = $1
-        remove = "    remove_index :#{table_name},"
+        remove = "remove_index :#{table_name},"
 
         columns = line =~ columns_regex
         if columns
@@ -26,7 +26,7 @@ class DbMigrateMerge
 
     end
 
-    indexes.compact.reverse.join("\n  ")
+    indexes.compact.reverse
   end
 
 end
