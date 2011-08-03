@@ -8,15 +8,19 @@ class DbMigrateMerge
 
       if line =~ table_regex
         table_name = $1
+        remove = "    remove_index :#{table_name},"
+
         columns = line =~ columns_regex
         if columns
           if $1.index "["
-            "remove_index :#{table_name}, :column => #{$1}"
+            "#{remove} :column => #{$1}"
           else
-            "remove_index :#{table_name}, :column => [#{$1}]"
+            "#{remove} :column => [#{$1}]"
           end
         elsif line =~ index_regex
-          "remove_index :#{table_name}, :name => \"#{$1}\""
+          "#{remove} :name => \"#{$1}\""
+        else
+          raise Exception.new "Expected to find an index name or column names in the db/schema.rb file but none were found:\n #{line}"
         end
       end
 

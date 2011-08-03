@@ -10,7 +10,7 @@ add_index "versions", "versioned_type"
 eof
 
       expected = <<-ex
-remove_index :versions, :column => ["versioned_type"]
+    remove_index :versions, :column => ["versioned_type"]
 ex
 
       DbMigrateMerge.generate_down_indexes([line]).should == expected[0..-2]
@@ -28,7 +28,7 @@ add_index "audited", "transaction", :name => "index_audited_on_transaction"
 eof
 
       expected_line = <<-eof
-remove_index :audited, :column => ["transaction"]
+    remove_index :audited, :column => ["transaction"]
 eof
 
       expected = [expected_line].join()[0..-2]
@@ -44,7 +44,7 @@ add_index "versions", ["versioned_type", "versioned_id"], :name => "index_versio
 eof
 
       expected = <<-ex
-remove_index :versions, :column => ["versioned_type", "versioned_id"]
+    remove_index :versions, :column => ["versioned_type", "versioned_id"]
 ex
       DbMigrateMerge.generate_down_indexes([line]).should == expected[0..-2]
     end
@@ -55,7 +55,7 @@ add_index "versions", :column => ["versioned_type", "versioned_id"], :name => "i
 eof
 
       expected = <<-ex
-remove_index :versions, :column => ["versioned_type", "versioned_id"]
+    remove_index :versions, :column => ["versioned_type", "versioned_id"]
 ex
 
       DbMigrateMerge.generate_down_indexes([line]).should == expected[0..-2]
@@ -65,7 +65,7 @@ add_index "versions", :column => ["versioned_type"], :name => "index_versions_on
 eof
 
       expected = <<-ex
-remove_index :versions, :column => ["versioned_type"]
+    remove_index :versions, :column => ["versioned_type"]
 ex
 
       DbMigrateMerge.generate_down_indexes([line]).should == expected[0..-2]
@@ -81,7 +81,7 @@ add_index "versions", :name => "index_versions_on_versioned_type_and_versioned_i
 eof
 
       expected = <<-ex
-remove_index :versions, :name => "index_versions_on_versioned_type_and_versioned_id"
+    remove_index :versions, :name => "index_versions_on_versioned_type_and_versioned_id"
 ex
 
       DbMigrateMerge.generate_down_indexes([line]).should == expected[0..-2]
