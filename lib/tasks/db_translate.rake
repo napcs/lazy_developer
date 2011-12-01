@@ -3,46 +3,61 @@ require 'active_record' unless Rails::VERSION::STRING.to_f < 2.3
 module ActiveRecord
   class Base
     
-    def self.to_yaml
-      chunk_size = 1000
+    def self.to_yaml(path, object)
+      chunk_size = ENV["CHUNK"].try(:to_i)
+      chunk_size ||= 1000
+      
       result = Hash.new
-      begin
-        range = self.find(:first, :order => "id desc").id
-      rescue ActiveRecord::RecordNotFound => e
-        range = 0  
-        puts "No records extracted"
-      end      
       
+      count = self.count
+      first_time = true
       
-      if range > 0
-        (0..range / chunk_size).each do |offset|
+      yml_export_file = "#{path}/#{object.table_name}.yml"
+      if File.exists?(yml_export_file)
+        File.delete(yml_export_file)
+        puts "[NOTICE] Deleting #{yml_export_file} for a clean re-export of data"
+      end
+      
+      puts "#{self.name}: exporting #{count} records"
+      minimum_id = 0
+      chunk_num = 0
+      if count > 0
+        while minimum_id
           object_collection = self.find(:all,
             :limit => chunk_size,
-            :conditions => ["id > ? and id < ?", (offset * chunk_size), ((offset + 1) * chunk_size)])
-          object_collection.each_with_index do |o, i|
+            :conditions => ["id > ?",minimum_id],
+            :order => "id asc")
+          object_collection.each do |o|
             attributes = o.attributes
-            result["#{self.name.to_s.downcase}_#{attributes["id"]}"] = o.attributes        
+            result["#{self.name.to_s.downcase}_#{attributes["id"]}"] = o.attributes
           end
+          
+          minimum_id = (object_collection.empty? || count < chunk_size) ? nil : object_collection.last.id
+          
+          chunk_num += 1
+          puts "#{self.name}: #{chunk_size * chunk_num}/#{count} (#{(((chunk_size * chunk_num) / count.to_f) * 100).round}%)" unless (result.empty? || count < chunk_size)
+          
+          write_file yml_export_file, first_time ? result.to_yaml : result.to_yaml.split("\n")[1..-1].join("\n")+"\n"
+          result = Hash.new
+          first_time = false
         end
       end
-      puts "#{self.name} = #{result.length} records"
-      result.to_yaml
-      
+      puts "#{self.name}: exported #{count} records"
     end
-    
-
-    
   end
-  
 end
+
 
 def write_file(filename, contents)
-  File.open(filename, "w") do |f|
+  action = File.exists?(filename) ? "Appended to" : "Wrote"
+  
+  File.open(filename, "a") do |f|
     f << contents
   end
-  puts "[FILE:] Wrote #{filename}"
   
+  puts "[FILE] #{action} #{filename}" unless contents.strip.empty?
 end
+
 
 def habtm_fixtures(object)
   path = RAILS_ROOT + "/production_data"
@@ -62,15 +77,11 @@ def habtm_fixtures(object)
          h[a.class.to_s.underscore + i.to_s] = {"#{o.class.to_s.underscore}_id" => o.id,
                 "#{a.class.to_s.underscore}_id" => a.id
                 }
-       end 
+       end
        
     end
     write_file p, h.to_yaml
-    
-    
   end
-
-  
 end
 
 
@@ -91,14 +102,14 @@ namespace :db do
     ############ This is to give a time calculation at the end ##################
       require 'time'
       include ActionView::Helpers::TextHelper
-
+      
       def seconds_fraction_to_time(seconds)
         hours = 0
         mins = 0
         if seconds >=  60
           mins = (seconds / 60).to_i 
           seconds = (seconds % 60 ).to_i
-
+          
           if mins >= 60 then
             hours = (mins / 60).to_i 
             mins = (mins % 60).to_i
@@ -113,17 +124,17 @@ namespace :db do
         if hours > 0
           total_time << pluralize(hours, 'hour') + ", "
         end
-
+        
         if mins > 0
           total_time << pluralize(mins, 'minute') + " and "
         end
-
+        
         if seconds > 0
           total_time << pluralize(seconds, 'second')
         else
           total_time << "0 seconds"
         end
-
+        
         total_time
       end
     ################################################################################
@@ -138,23 +149,20 @@ namespace :db do
     FileUtils.mkdir_p path rescue nil
     models.each do |m|
       begin
-      this_models_start_time = Time.now
-      
-      object = m.constantize
-      puts "[DB] Dumping data for #{object}"
-      str =  object.to_yaml
-
-      write_file "#{path}/#{object.table_name}.yml", str
-      # get the association data for has_and_belongs_to_many
-      habtm_fixtures(object)
-      
-      puts "[TIME] It took #{seconds_fraction_to_time(Time.now - this_models_start_time.to_time)} to export the data for the #{m} model"
-      rescue
-        puts "[ERROR] skipping '#{m}' - not a model"
+        this_models_start_time = Time.now
+        
+        object = m.constantize
+        puts "[DB] Dumping data for #{object}"
+        str =  object.to_yaml(path, object)
+        
+        # get the association data for has_and_belongs_to_many
+        habtm_fixtures(object)
+        
+        puts "[TIME] It took #{seconds_fraction_to_time(Time.now - this_models_start_time.to_time)} to export the data for the #{m} model"
+      rescue => e
+        puts "[ERROR] #{e} skipping '#{m}' - not a model"
       end
     end
-    puts "[TIME] It took #{seconds_fraction_to_time(Time.now - start_time.to_time)} total to export the data your requested"
-    
+    puts "[TOTAL TIME] It took #{seconds_fraction_to_time(Time.now - start_time.to_time)} total to export the data your requested"
   end
-  
 end
