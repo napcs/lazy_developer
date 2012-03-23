@@ -1,5 +1,5 @@
 =LazyDeveloper
-Copyright (C) 2007-2011 Brian P. Hogan and Kevin Gisi
+Copyright (C) 2007-2012 Brian P. Hogan, Kevin Gisi, and Jon Kinney
 
 Developers are lazy. I know I am. If I have to do things over and over, I want
 them to be automated. Maybe that's efficient and not lazy. However, lazy is a 
@@ -10,19 +10,18 @@ easier. I use them in many of my projects and I invite you to do the same.
 
 = Installation
 
-This plugin supports Rails 2 and Rails 3.
+This gem supports Rails 3 and up.
 
-== Rails 3 installation
+== Installation
 
- rails plugin install git@github.com:napcs/lazy_developer.git
- 
-== Rails 2 installation
+  gem install lazy_developer
+  
+or add it to your `gemfile` but only in the development and test groups.
 
-Rails 2 support is in the rails2 branch. Install it like this:
-
- ruby script/plugin install  git@github.com:napcs/lazy_developer.git -r rails2
- 
- 
+  group :development, :test do
+    gem 'lazy_developer'
+  end
+   
 
 = Usage
 
@@ -125,8 +124,6 @@ Displays the last tag.
 === rake svn:tag TAG=rel_1-0-0
 Creates a new tag from the trunk.
 
-== Rcov
-We're fans of RCov and we've included some ways to make it easier to use RCov in your projects.
 
 === Test::Unit
 
@@ -227,5 +224,3 @@ Run
 to clean up tmp, logs, and docs in one easy command.
 
 
-
-Copyright (c) 2007-2009 Brian Hogan and Kevin Gisi. Released under the MIT license
