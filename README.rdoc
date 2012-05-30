@@ -14,16 +14,14 @@ This plugin supports Rails 2 and Rails 3.
 
 == Rails 3 installation
 
- rails plugin install git@github.com:napcs/lazy_developer.git
+ rails plugin install git@github.com:jonhoman/lazy_developer.git
  
 == Rails 2 installation
 
 Rails 2 support is in the rails2 branch. Install it like this:
 
- ruby script/plugin install  git@github.com:napcs/lazy_developer.git -r rails2
+ ruby script/plugin install  git@github.com:jonhoman/lazy_developer.git -r rails2
  
- 
-
 = Usage
 
 == Databases
